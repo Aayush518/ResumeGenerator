@@ -3,22 +3,31 @@ import { useForm, useFieldArray } from 'react-hook-form';
 import { motion } from 'framer-motion';
 import FormSection from './FormSection';
 import DynamicFieldArray from './DynamicFieldArray';
+import { InputField, TextAreaField } from './FormFields';
 
 const ResumeForm = () => {
-  const { register, control, watch, handleSubmit, formState: { errors } } = useForm({
+  const { register, control, handleSubmit, watch } = useForm({
     defaultValues: {
-      education: [{ institution: '', degree: '', year: '' }],
-      experience: [{ company: '', position: '', description: '', duration: '' }],
-      projects: [{ name: '', technologies: '', description: '', link: '' }]
+      fullName: '',
+      email: '',
+      phone: '',
+      linkedin: '',
+      summary: '',
+      education: [],
+      experience: [],
+      projects: [],
+      certifications: [],
+      skills: ''
     }
   });
 
   const educationArray = useFieldArray({ control, name: "education" });
   const experienceArray = useFieldArray({ control, name: "experience" });
   const projectsArray = useFieldArray({ control, name: "projects" });
+  const certificationsArray = useFieldArray({ control, name: "certifications" });
 
-  // Watch for changes to update preview in real-time
   const formData = watch();
+
   React.useEffect(() => {
     const event = new CustomEvent('resumeDataUpdate', { detail: formData });
     window.dispatchEvent(event);
@@ -30,59 +39,45 @@ const ResumeForm = () => {
   };
 
   return (
-    <motion.form 
+    <motion.form
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
       onSubmit={handleSubmit(onSubmit)}
-      className="space-y-8 bg-white p-8 rounded-xl shadow-lg"
+      className="space-y-8"
     >
       <FormSection title="Personal Information">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Full Name</label>
-            <input
-              {...register("fullName", { required: "Name is required" })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-            />
-            {errors.fullName && <p className="text-red-500 text-sm mt-1">{errors.fullName.message}</p>}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Email</label>
-            <input
-              type="email"
-              {...register("email", { required: "Email is required" })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-            />
-            {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Phone</label>
-            <input
-              {...register("phone")}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">LinkedIn</label>
-            <input
-              {...register("linkedin")}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-            />
-          </div>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Summary</label>
-          <textarea
-            {...register("summary")}
-            rows={4}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+          <InputField
+            label="Full Name"
+            register={register}
+            name="fullName"
+          />
+          <InputField
+            label="Email"
+            register={register}
+            name="email"
+            type="email"
+          />
+          <InputField
+            label="Phone"
+            register={register}
+            name="phone"
+          />
+          <InputField
+            label="LinkedIn"
+            register={register}
+            name="linkedin"
+            placeholder="https://linkedin.com/in/username"
           />
         </div>
+        <TextAreaField
+          label="Professional Summary"
+          register={register}
+          name="summary"
+          rows={4}
+          className="mt-4"
+        />
       </FormSection>
 
       <FormSection title="Education">
@@ -107,32 +102,42 @@ const ResumeForm = () => {
         />
       </FormSection>
 
+      <FormSection title="Certifications">
+        <DynamicFieldArray
+          fields={certificationsArray.fields}
+          append={certificationsArray.append}
+          remove={certificationsArray.remove}
+          register={register}
+          title="Certification"
+          basePath="certifications"
+        />
+      </FormSection>
+
       <FormSection title="Projects">
         <DynamicFieldArray
           fields={projectsArray.fields}
           append={projectsArray.append}
           remove={projectsArray.remove}
           register={register}
-          title="Projects"
+          title="Project"
           basePath="projects"
         />
       </FormSection>
 
       <FormSection title="Skills">
-        <div>
-          <textarea
-            {...register("skills")}
-            placeholder="Enter your skills (comma separated)"
-            rows={3}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-          />
-        </div>
+        <TextAreaField
+          label="Skills"
+          register={register}
+          name="skills"
+          rows={3}
+          placeholder="Enter your skills (comma separated)"
+        />
       </FormSection>
 
       <div className="flex justify-end">
         <button
           type="submit"
-          className="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+          className="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors duration-200"
         >
           Generate Resume
         </button>

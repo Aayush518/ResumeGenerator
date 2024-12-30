@@ -3,17 +3,21 @@ import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header';
 import ResumeForm from '../components/ResumeForm';
 import ResumePreview from '../components/ResumePreview';
+import Footer from '../components/Footer';
 ---
 
 <Layout title="Modern Resume Builder">
-  <main class="container mx-auto px-4 py-8">
+  <main class="container mx-auto px-4 py-8 min-h-screen flex flex-col">
     <Header client:load />
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-      <ResumeForm client:load />
-      <div class="lg:sticky lg:top-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto flex-grow">
+      <div class="lg:order-2 lg:sticky lg:top-8 h-fit">
         <ResumePreview client:load />
       </div>
+      <div class="lg:order-1">
+        <ResumeForm client:load />
+      </div>
     </div>
+    <Footer client:load />
   </main>
 </Layout>
 

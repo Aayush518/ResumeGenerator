@@ -7,13 +7,17 @@ const FormSection = ({ title, children }) => {
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.5 }}
-      className="space-y-4 p-6 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-300"
+      className="bg-white rounded-xl border border-gray-100 shadow-lg hover:shadow-xl transition-all duration-300"
     >
-      <h3 className="text-xl font-semibold text-gray-900 flex items-center">
-        <div className="h-8 w-1 bg-indigo-600 rounded-full mr-3"></div>
-        {title}
-      </h3>
-      {children}
+      <div className="p-8">
+        <h3 className="text-2xl font-semibold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
+          {title}
+        </h3>
+        <div className="relative">
+          <div className="absolute -left-4 top-0 bottom-0 w-1 bg-gradient-to-b from-indigo-500 via-purple-500 to-pink-500 rounded-full"></div>
+          {children}
+        </div>
+      </div>
     </motion.div>
   );
 };
